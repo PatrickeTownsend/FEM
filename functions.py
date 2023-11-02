@@ -81,3 +81,37 @@ def plot_mesh_1D(NodeList, ElemList):
     plt.ylim([-0.25, 0.25])
 
     return
+
+def interpolation(N_matrix,nodes,elements):
+    NumElement = np.shape(elements)[0]
+    N_matrix = np.transpose(N_matrix)
+    x_global = np.zeros((NumElement,np.shape(N_matrix)[0]))
+    u_global = np.zeros((NumElement,np.shape(N_matrix)[0]))
+    for i in range(0,NumElement):
+        start = elements[i][0]
+        end = elements[i][1]
+        x1 = nodes[start]
+        x2 = nodes[end]
+        u1 = Desp_function(x1)
+        u2 = Desp_function(x2)
+        x_local = np.array([[x1],[x2]])
+        u_local = np.array([[u1],[u2]])
+        x = np.dot(N_matrix,x_local)
+        u = np.dot(N_matrix,u_local)
+        for j in range(0,np.shape(N_matrix)[0]):
+            x_global[i,j]+=x[j]
+            u_global[i,j]+=u[j]
+        
+    x_global = x_global.flatten()
+    u_global = u_global.flatten()
+    return x_global, u_global
+
+def Desp_function(x):
+    u = -4*(x-0.3)**6 + (0.6-x)**5 - (5*10**(-6))*(1/(x+0.1))**4 + (x-0.2)**3
+    return u
+
+def u_exact(x):
+    u = np.zeros((len(x)))
+    for i in range(0,len(x)):
+        u[i] += Desp_function(x[i])
+    return u
