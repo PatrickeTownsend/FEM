@@ -1,15 +1,20 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import functions as func
-node_number = 3
+NodesPerElem = 2
+Lx = 1.0
+ne = 3
 xi = np.linspace(-1,1,1000)
 
-N_matrix = func.N_nat_fun_1D(xi,node_number)
+N_matrix = func.N_nat_fun_1D(xi,NodesPerElem)
+nodes,elements = func.discretize(Lx,ne,NodesPerElem)
 
+func.plot_mesh_1D(nodes,elements)
 
+plt.figure()
 plt.plot(xi,N_matrix[0,:],label="Funcion N1")
 plt.plot(xi,N_matrix[1,:],label="Funcion N2")
-if node_number ==3:
+if NodesPerElem ==3:
     plt.plot(xi,N_matrix[2,:],label="Funcion N3")
 plt.title("Funciones de Forma")
 plt.legend()
