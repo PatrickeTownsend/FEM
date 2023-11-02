@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import functions as func
-NodesPerElem = 2
+#----Input Variables---#
+NodesPerElem = 3
 Lx = 1.0
 ne = 3
 xi = np.linspace(-1,1,1000)
@@ -9,8 +10,8 @@ xi = np.linspace(-1,1,1000)
 N_matrix = func.N_nat_fun_1D(xi,NodesPerElem)
 nodes,elements = func.discretize(Lx,ne,NodesPerElem)
 
+#----Plots----#
 func.plot_mesh_1D(nodes,elements)
-
 plt.figure()
 plt.plot(xi,N_matrix[0,:],label="Funcion N1")
 plt.plot(xi,N_matrix[1,:],label="Funcion N2")
