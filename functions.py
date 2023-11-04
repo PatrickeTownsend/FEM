@@ -280,8 +280,8 @@ def errorRefinement(xi:np.ndarray[float],Lx:float,NodesPerElem:int,typeOfElem:st
     plt.ylabel("Error relativo")
     plt.grid()
     plt.legend()
-    route = "plots/error_vs_gdl_"+typeOfElem+".png"
-    plt.savefig(route)
+    # route = "plots/error_vs_gdl_"+typeOfElem+".png"
+    # plt.savefig(route)
     return
 
 def Plot_Interpolated(x,x_global,u_global,nodes,typeOfElem):
@@ -296,8 +296,8 @@ def Plot_Interpolated(x,x_global,u_global,nodes,typeOfElem):
     plt.ylabel("Desplazamiento")
     plt.legend()
     plt.grid()
-    route="plots/interpolation_"+typeOfElem+".png"
-    plt.savefig(route)
+    # route="plots/interpolation_"+typeOfElem+".png"
+    # plt.savefig(route)
     return
 
 def Plot_formFunc(xi,N_matrix,NodesPerElem,typeOfElem):
@@ -311,8 +311,8 @@ def Plot_formFunc(xi,N_matrix,NodesPerElem,typeOfElem):
     plt.legend()
     plt.xlabel("xi")
     plt.grid()
-    route = "plots/form_func_"+typeOfElem+".png"
-    plt.savefig(route)
+    # route = "plots/form_func_"+typeOfElem+".png"
+    # plt.savefig(route)
     return
 
 def PlotErrorDist(u_global,Lx):
