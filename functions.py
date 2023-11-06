@@ -1,3 +1,7 @@
+#------------------------------#
+# Created by: Patrick Townsend #
+#        FEM 1D Functions      #
+#------------------------------#
 import numpy as np
 import matplotlib.pyplot as plt
 def N_nat_fun_1D(xi:np.ndarray[float], NodesPerElem:int) -> np.ndarray[float]:
@@ -314,13 +318,3 @@ def Plot_formFunc(xi,N_matrix,NodesPerElem,typeOfElem):
     # route = "plots/form_func_"+typeOfElem+".png"
     # plt.savefig(route)
     return
-
-def PlotErrorDist(u_global,Lx):
-    error,x_e = errorDist(u_global,Lx)
-    plt.figure()
-    plt.plot(x_e,error)
-    plt.axhline(y=0.02,color='r')
-    plt.title("Distribucion de error")
-    plt.xlabel("Posicion (m)")
-    plt.ylabel("error relativo")
-    plt.grid()

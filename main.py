@@ -1,10 +1,13 @@
+#------------------------------#
+# Created by: Patrick Townsend #
+#        FEM 1D Main           #
+#------------------------------#
 import numpy as np
 import matplotlib.pyplot as plt
 import functions as func
-
 #----Input Variables---#
 N = 200 # Tamaño de la malla 
-NodesPerElem = 2 # Number of nodes per element (2: lineal y 3: cuadratico)
+NodesPerElem = 3 # Number of nodes per element (2: lineal y 3: cuadratico)
 ne = 5 # Numero de elementos a discretizar
 
 Lx = 1.0 # Longitud total
@@ -26,6 +29,5 @@ if __name__ == "__main__":
    func.Plot_Interpolated(x,x_global,u_global,nodes,typeOfElem)
    func.plot_mesh_1D(nodes,elements)
    func.Plot_formFunc(xi,N_matrix,NodesPerElem,typeOfElem)
-   func.PlotErrorDist(u_global,Lx)
    plt.show()
 
