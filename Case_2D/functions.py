@@ -101,7 +101,7 @@ def Jacobian(eta:float,xi:float, coordinates:np.ndarray[float])->np.ndarray[floa
     
     return J
 
-def MatrixB(eta:float,xi:float, coordinates:np.ndarray[float]):
+def MatrixB(eta:float,xi:float, coordinates:np.ndarray[float])->np.ndarray[float]:
     J = Jacobian(eta,xi, coordinates)
     J_inv = np.linalg.inv(J)
     dN = np.zeros((4,2))
@@ -118,7 +118,7 @@ def MatrixD(E:float,nu:float)->np.ndarray[float]:
     D = E/(1-nu**2)*np.array([[1,nu,0],[nu,1,0],[0,0,(1-nu)/2]])
     return D
 
-def ComputeElemStiff(coord,D,GPE,t):
+def ComputeElemStiff(coord:np.ndarray[float],D:np.ndarray[float],GPE:int,t:float)->np.ndarray[float]:
     Gp = [[-1/np.sqrt(3),-1/np.sqrt(3)],[1/np.sqrt(3),-1/np.sqrt(3)],[1/np.sqrt(3),1/np.sqrt(3)],[-1/np.sqrt(3),1/np.sqrt(3)]]
     W = 1.0
     Kelem = np.zeros((8,8))
@@ -134,16 +134,33 @@ def ComputeElemStiff(coord,D,GPE,t):
         Kelem += A2*detJ*t*W
     return Kelem
 
-def testKelem(nodes,elem,D,t):
-    elem1 = elem[0,:]
-    coord = np.zeros((len(elem1),2))
-    for i in range(0,len(elem1)):
-        coord[i,:]+=nodes[elem1[i],:]
-    kelem = ComputeElemStiff(coord,D,4,t)
-    return kelem
+def ElemCoords(elem:np.ndarray[float],nodes:np.ndarray[float])->np.ndarray[float]:
+    coord = np.zeros((len(elem),2))
+    for i in range(0,len(elem)):
+        coord[i,:]+=nodes[elem[i],:]
+    return coord
+
+def Asembly_global(Kglobal:np.ndarray[float],Kelem:np.ndarray[float],elem:np.ndarray[float])->np.ndarray[float]:
+    for i in range(len(elem)):
+        for j in range(len(elem)):
+            Kglobal[2*elem[i]:2*(elem[i]+1), 2*elem[j]:2*(elem[j]+1)] = Kelem[2*i:i*2+2, 2*j:2*j+2]
+    return Kglobal
+
+def StiffnesMatrix(nodes:np.ndarray[float],elements:np.ndarray[float],D:np.ndarray[float],t:float)->np.ndarray[float]:
+    node_num = np.shape(nodes)[0]
+    Kglobal = np.zeros((node_num*2,node_num*2))
+    for i in range(np.shape(elements)[0]):
+        elem = elements[i,:]
+        coord = ElemCoords(elem,nodes)
+        Kelem = ComputeElemStiff(coord,D,4,t)
+        Kglobal += Asembly_global(Kglobal,Kelem,elem)
+    return Kglobal
 
 
-#def Asembly_global(Kglobal,Kelem,elem):
+
+
+
+
 
 
 

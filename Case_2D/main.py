@@ -10,8 +10,9 @@ nu = 0.33
 #---Main---#
 if __name__ == "__main__":
    elements,nodes = func.discretize(Lx,Ly,ne_x,ne_y)
-   #func.plot_mesh(nodes,elements)
+   func.plot_mesh(nodes,elements)
    D = func.MatrixD(E,nu)
-   kelem = func.testKelem(nodes,elements,D,t)
-   print(kelem)
+   Kglobal = func.StiffnesMatrix(nodes,elements,D,t)
+   print(Kglobal[0:3,0:3])
+   
 
