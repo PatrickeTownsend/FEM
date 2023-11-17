@@ -62,7 +62,6 @@ def plot_mesh(nodes,elements):
     plt.xlim([-0.5,np.max(nodes[:,0])+0.5])
     plt.ylim([-0.5,np.max(nodes[:,1])+0.5])
 
-    plt.show()
 
 def dEta(xi:float,elem:int)->float:
     if elem == 1:
@@ -190,8 +189,8 @@ def ApplyNewman(Boundary,F,Fglobal):
         F_newman[2*index+DOF] += F
     return F_newman
 
-def FuerzaDist(Boundary,F,F_newman):
-    w = F/(len(Boundary)-1)
+def FuerzaDist(Boundary,F,F_newman,t,Lx):
+    w = (F/(len(Boundary)-1))*Lx*t
     for i in range(len(Boundary)):
         index = Boundary[i][0]
         DOF = Boundary[i][1]

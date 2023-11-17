@@ -27,7 +27,8 @@ def plot_deformed_mesh(nodes,elements,nodes_new,Plot_nodes=True,Plot_elem=True):
         for i in range(nodes_new.shape[0]):
             ax_mesh.plot(nodes_new[i,0],nodes_new[i,1],'o',markersize=5,color='red',alpha=1.)
     plt.show()
-    return
+    
+
 
 
 # Plot displacement fields
@@ -87,6 +88,7 @@ def PlotDisplacements(nodes,elements,u_sol,Plot_elem=False):
         Plot_elements(ax_uy,nodes,elements,linewidth = 1., alpha = 1.)
     plt.show()
 
+
     return
     
     
@@ -105,6 +107,5 @@ def Plot_elements(ax,nodes,elements,linewidth = 1., alpha = 1.):
         ax.plot([Node2[0],Node3[0]],[Node2[1],Node3[1]],'-k',linewidth=linewidth,alpha=alpha)
         ax.plot([Node3[0],Node4[0]],[Node3[1],Node4[1]],'-k',linewidth=linewidth,alpha=alpha)
         ax.plot([Node4[0],Node1[0]],[Node4[1],Node1[1]],'-k',linewidth=linewidth,alpha=alpha)
-    plt.show()
        
     return
