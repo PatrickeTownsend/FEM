@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-def discretize(Lx:float,Ly:float,ne_x:int,ne_y:int)->tuple[np.ndarray[int],np.ndarray[float]]:
+def discretize(Lx:float,Ly:float,ne_x:int,ne_y:int)->tuple[np.ndarray[int],np.ndarray[float],np.ndarray[float]]:
     """
     Genera la malla del elementos discretizado
 
@@ -29,7 +29,7 @@ def discretize(Lx:float,Ly:float,ne_x:int,ne_y:int)->tuple[np.ndarray[int],np.nd
         for i in range(0,ne_x):
             elem_mesh = mesh[j:j+2,i:i+2]
             elem.append([elem_mesh[0,0],elem_mesh[0,1],elem_mesh[1,1],elem_mesh[1,0]])
-    return np.vstack(elem),np.vstack(nodes)
+    return np.vstack(elem),np.vstack(nodes),mesh
 
 # Plot a 2D mesh
 # Inputs:
@@ -143,7 +143,7 @@ def ElemCoords(elem:np.ndarray[float],nodes:np.ndarray[float])->np.ndarray[float
 def Asembly_global(Kglobal:np.ndarray[float],Kelem:np.ndarray[float],elem:np.ndarray[float])->np.ndarray[float]:
     for i in range(len(elem)):
         for j in range(len(elem)):
-            Kglobal[2*elem[i]:2*(elem[i]+1), 2*elem[j]:2*(elem[j]+1)] = Kelem[2*i:i*2+2, 2*j:2*j+2]
+            Kglobal[2*elem[i]:2*(elem[i]+1), 2*elem[j]:2*(elem[j]+1)] += Kelem[2*i:i*2+2, 2*j:2*j+2]
     return Kglobal
 
 def StiffnesMatrix(nodes:np.ndarray[float],elements:np.ndarray[float],D:np.ndarray[float],t:float)->np.ndarray[float]:
@@ -153,10 +153,66 @@ def StiffnesMatrix(nodes:np.ndarray[float],elements:np.ndarray[float],D:np.ndarr
         elem = elements[i,:]
         coord = ElemCoords(elem,nodes)
         Kelem = ComputeElemStiff(coord,D,4,t)
-        Kglobal += Asembly_global(Kglobal,Kelem,elem)
+        Kglobal = Asembly_global(Kglobal,Kelem,elem)
     return Kglobal
 
+def LocateNodes(side:str,mesh:np.ndarray[int],DOF:int)->list:
+    size = np.shape(mesh)
+    Boundary = []
+    if side=="right":
+        line = mesh[:,size[1]-1]
+    elif side=="lower":
+        line = mesh[0,:]
+    elif side=="left":
+        line = mesh[:,0]
+    elif side=="upper":
+        line = mesh[size[0]-1,:]
+    for i in range(len(line)):
+        Boundary.append([line[i],DOF])
+    return Boundary
 
+
+def ApplyDirichletPen(Boundary,delta,Kb,Kglobal,Fglobal):
+    K_new = np.copy(Kglobal)
+    F_new = np.copy(Fglobal)
+    for i in range(len(Boundary)):
+        index = Boundary[i][0]
+        DOF = Boundary[i][1]
+        K_new[2*index+DOF,2*index+DOF] += Kb
+        F_new[2*index+DOF] = Kb*delta
+    return K_new,F_new
+
+def ApplyNewman(Boundary,F,Fglobal):
+    F_newman = np.copy(Fglobal)
+    for i in range(len(Boundary)):
+        index = Boundary[i][0]
+        DOF = Boundary[i][1]
+        F_newman[2*index+DOF] += F
+    return F_newman
+
+def FuerzaDist(Boundary,F,F_newman):
+    w = F/(len(Boundary)-1)
+    for i in range(len(Boundary)):
+        index = Boundary[i][0]
+        DOF = Boundary[i][1]
+        if i==0 or i==len(Boundary)-1:
+            F_newman[2*index+DOF] += w/2
+        else:
+            F_newman[2*index+DOF] += w
+    return F_newman
+
+def Update_nodes(nodes,U):
+    desp = U.reshape(np.shape(nodes))
+    nodes_desp = nodes + desp
+    return nodes_desp
+
+
+
+
+
+
+
+    
 
 
 
